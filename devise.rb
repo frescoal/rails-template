@@ -233,6 +233,38 @@ environment.plugins.prepend('Provide',
   # Dotenv
   ########################################
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.env > .env'
+  
+  # Database Configuration
+  ########################################
+  insert_into_file "config/database.yml", :after => "development:\n  <<: *default\n" do 
+    "  usernname: <%= ENV['DEV_DB_USERNAME'] %>\n password: <%= ENV['DEV_DB_PASSWORD'] %>"
+  end
+  gsub_file('config/database.yml', /database: */, 'database: <%= ENV['DEV_DB_NAME'] %>')
+
+  # Development config
+  ########################################
+  insert_into_file "config/environments/development.rb", :after => "config.file_watcher = ActiveSupport::EventedFileUpdateChecker\n" do 
+    config = []
+    config << "# Make .env file work in development"
+    config << "Bundler.require(*Rails.groups)"
+    config << "Dotenv::Railtie.load"
+    config << ""
+    config << "# Config Bullet"
+    config << "config.after_initialize do"
+    config << "  Bullet.enable = true"
+    config << "  Bullet.rails_logger = true"
+    config << "  # Whitelist"
+    config << "end"  
+    config << ""  
+    config << "# Mailcatcher"
+    config << "config.action_mailer.perform_deliveries = true"
+    config << "config.action_mailer.delivery_method = :smtp"
+    config << "config.action_mailer.smtp_settings = {address: 'localhost', port: 1025}"
+    config << "config.action_mailer.default_url_options = {host: 'localhost:3000'}"
+    config << "config.action_mailer.raise_delivery_errors = true"
+    config.join("\n")
+  end
+
 
   # Rubocop
   ########################################
