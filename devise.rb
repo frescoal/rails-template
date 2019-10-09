@@ -24,6 +24,9 @@ gem 'webpacker'
 
 group :development do
   gem 'web-console', '>= 3.3.0'
+  gem 'bullet'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 group :development, :test do
@@ -75,7 +78,6 @@ file 'app/views/layouts/application.html.erb', <<-HTML
     <%#= stylesheet_pack_tag 'application', media: 'all' %> <!-- Uncomment if you import CSS in app/javascript/packs/application.js -->
   </head>
   <body>
-    <%= render 'shared/navbar' %>
     <%= render 'shared/flashes' %>
     <%= yield %>
     <%= javascript_include_tag 'application' %>
@@ -103,7 +105,6 @@ file 'app/views/shared/_flashes.html.erb', <<-HTML
 <% end %>
 HTML
 
-run 'curl -L https://github.com/lewagon/awesome-navbars/raw/master/templates/_navbar_wagon.html.erb > app/views/shared/_navbar.html.erb'
 run 'curl -L https://wavemind.ch/wp-content/uploads/2019/04/wav-logo.png > app/assets/images/logo.png'
 
 # Generators
@@ -125,11 +126,11 @@ after_bundle do
   # Generators: db + simple form + pages controller
   ########################################
   generate('simple_form:install', '--bootstrap')
-  generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
+  generate(:controller, 'dashboard', 'index', '--skip-routes', '--no-test-framework')
 
   # Routes
   ########################################
-  route "root to: 'pages#home'"
+  route "root to: 'dashboard#index'"
 
   # Git ignore
   ########################################
@@ -158,18 +159,18 @@ class ApplicationController < ActionController::Base
 end
   RUBY
 
-  # migrate + devise views
+  # Devise views
   ########################################
   generate('devise:views')
 
   # Pages Controller
   ########################################
-  run 'rm app/controllers/pages_controller.rb'
-  file 'app/controllers/pages_controller.rb', <<-RUBY
-class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:home]
+  run 'rm app/controllers/dashboard_controller.rb'
+  file 'app/controllers/dashboard_controller.rb', <<-RUBY
+class DashboardController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:index]
 
-  def home
+  def index
   end
 end
   RUBY
@@ -208,16 +209,17 @@ environment.plugins.prepend('Provide',
 
   # Dotenv
   ########################################
+
   run 'curl -L https://bitbucket.org/wavemind_swiss/rails-template/raw/cafbdb47d30e8b40dcce4bdc20136d41827c699d/.env > .env'
 
   # Rubocop
   ########################################
-  run 'curl -L https://bitbucket.org/wavemind_swiss/rails-template/raw/cafbdb47d30e8b40dcce4bdc20136d41827c699d/.rubocop.yml > .rubocop.yml'
-  run 'curl -L https://bitbucket.org/wavemind_swiss/rails-template/raw/cafbdb47d30e8b40dcce4bdc20136d41827c699d/.rubocop_airbnb.yml > .rubocop_airbnb.yml'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.rubocop.yml > .rubocop.yml'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.rubocop_airbnb.yml > .rubocop_airbnb.yml'
 
   # Git
   ########################################
-  # git :init
-  # git add: '.'
-  # git commit: "-m 'Initial commit with devise template from https://github.com/lewagon/rails-templates'"
+  git :init
+  git add: '.'
+  git commit: "-m 'Initial commit with devise only'"
 end
