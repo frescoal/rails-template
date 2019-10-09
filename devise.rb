@@ -214,7 +214,6 @@ import "bootstrap";
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
     <<-JS
 const webpack = require('webpack')
-
 // Preventing Babel from transpiling NodeModules packages
 environment.loaders.delete('nodeModules');
 
@@ -239,7 +238,7 @@ environment.plugins.prepend('Provide',
   insert_into_file "config/database.yml", :after => "development:\n  <<: *default\n" do 
     "  usernname: <%= ENV['DEV_DB_USERNAME'] %>\n password: <%= ENV['DEV_DB_PASSWORD'] %>"
   end
-  gsub_file('config/database.yml', /database: */, 'database: <%= ENV['DEV_DB_NAME'] %>')
+  gsub_file('config/database.yml', /database: */, 'database: <%= ENV[\'DEV_DB_NAME\'] %>')
 
   # Development config
   ########################################
