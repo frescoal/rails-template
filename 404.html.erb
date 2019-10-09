@@ -1,0 +1,13 @@
+<div id="outer">
+  <div id="container">
+    <%= image_tag 'logo.png', height:'50' %>
+    <h1 class="big">404</h1>
+    <div id="error-content">
+      <h1>Désolé, la page sur laquelle vous essayez de vous connecter, est introuvable.</h1>
+      <p>Veuillez resaisir l’adresse dans votre navigateur ou retourner en arrière. Si cela ne fonctionne pas, veuillez cliquer sur le lien ci-dessous pour retourner au menu principal.</p>
+      <div class="btn btn-red btn-block">
+      <%= link_to 'Retourner au site', root_url %>
+      </div>
+    </div>
+  </div>
+</div>

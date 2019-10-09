@@ -49,8 +49,6 @@ YAML
 ########################################
 run 'rm -rf app/assets/stylesheets'
 run 'rm -rf vendor'
-run 'curl -L https://github.com/lewagon/stylesheets/archive/master.zip > stylesheets.zip'
-run 'unzip stylesheets.zip -d app/assets && rm stylesheets.zip && mv app/assets/rails-stylesheets-master app/assets/stylesheets'
 
 run 'rm app/assets/javascripts/application.js'
 file 'app/assets/javascripts/application.js', <<-JS
@@ -131,6 +129,9 @@ after_bundle do
   # Routes
   ########################################
   route "root to: 'dashboard#index'"
+  route "get '/404', to: 'errors#not_found'"
+  route "get '/422', to: 'errors#unacceptable'"
+  route "get '/500', to: 'errors#internal_error'"
 
   # Git ignore
   ########################################
@@ -158,6 +159,26 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 end
   RUBY
+
+  # Error Managment
+  ########################################
+  file 'app/controllers/errors_controller.rb', <<-RUBY
+class ErrorsController < ApplicationController
+  skip_before_action :authenticate_user!
+
+  def not_found
+    render status: 404
+  end
+
+  def internal_error
+    render status: 500
+  end
+end
+  RUBY
+
+  run 'rm app/views/errors'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
 
   # Devise views
   ########################################
@@ -209,7 +230,6 @@ environment.plugins.prepend('Provide',
 
   # Dotenv
   ########################################
-
   run 'curl -L https://bitbucket.org/wavemind_swiss/rails-template/raw/cafbdb47d30e8b40dcce4bdc20136d41827c699d/.env > .env'
 
   # Rubocop
