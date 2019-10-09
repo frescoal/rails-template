@@ -217,6 +217,10 @@ environment.plugins.prepend('Provide',
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.rubocop.yml > .rubocop.yml'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.rubocop_airbnb.yml > .rubocop_airbnb.yml'
 
+  # Editorconfig
+  ########################################
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.editorconfig > .editorconfig'
+
   # Git
   ########################################
   git :init
