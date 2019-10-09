@@ -230,7 +230,7 @@ environment.plugins.prepend('Provide',
 
   # Dotenv
   ########################################
-  run 'curl -L https://bitbucket.org/wavemind_swiss/rails-template/raw/cafbdb47d30e8b40dcce4bdc20136d41827c699d/.env > .env'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.env > .env'
 
   # Rubocop
   ########################################
