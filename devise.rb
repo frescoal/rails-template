@@ -239,6 +239,7 @@ environment.plugins.prepend('Provide',
     "  username: <%= ENV['DEV_DB_USERNAME'] %>\n  password: <%= ENV['DEV_DB_PASSWORD'] %>\n"
   end
   gsub_file('config/database.yml', /database: .*/, 'database: <%= ENV[\'DEV_DB_NAME\'] %>')
+  gsub_file('config/database.yml', /test:\n  <<: \*default\n  database: <%= ENV\['DEV_DB_NAME'\] %>/, 'test:\n  <<: *default\n  database: <%= ENV[\'DEV_DB_NAME\'] %>_test')
 
   # Development config
   ########################################
