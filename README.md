@@ -15,7 +15,7 @@ Pour avoir la configuration de base de rails 5.2+ avec Bootstrap, Simple form, d
 rails new \
   --database postgresql \
   --webpack \
-  -m https://raw.githubusercontent.com/frescoal/rails-template/master/minimal.rb \
+  -m https://raw.githubusercontent.com/frescoal/rails-template/master/devise.rb \
   NOM_DE_L_APP
 ```
 
