@@ -10,7 +10,7 @@ ruby '#{RUBY_VERSION}'
 #{"gem 'bootsnap', require: false" if Rails.version >= "5.2"}
 gem 'devise'
 gem 'jbuilder', '~> 2.0'
-gem 'pg', '~> 0.21'
+gem 'pg'
 gem 'tzinfo-data'
 gem 'puma'
 gem 'rails', '#{Rails.version}'
