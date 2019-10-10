@@ -178,7 +178,7 @@ class ErrorsController < ApplicationController
 end
   RUBY
 
-  run 'rm app/views/errors'
+  run 'mkdir app/views/errors'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
 
@@ -235,19 +235,22 @@ environment.plugins.prepend('Provide',
   
   # Database Configuration
   ########################################
-  insert_into_file "config/database.yml", :after => "development:\n  <<: *default\n" do 
+  insert_into_file "config/database.yml", after: "development:\n  <<: *default\n" do 
     "  username: <%= ENV['DEV_DB_USERNAME'] %>\n  password: <%= ENV['DEV_DB_PASSWORD'] %>\n"
   end
   gsub_file('config/database.yml', /database: .*/, 'database: <%= ENV[\'DEV_DB_NAME\'] %>')
   gsub_file('config/database.yml', /test:\n  <<: \*default\n  database: <%= ENV\['DEV_DB_NAME'\] %>/, 'test:')
-  insert_into_file "config/database.yml", :after => "test:" do 
-    "  <<: *default\n  database: <%= ENV['TEST_DB_NAME'] %>\n  password: <%= ENV['TEST_DB_PASSWORD'] %>\n  username: <%= ENV['TEST_DB_USERNAME'] %>\n"
+
+  insert_into_file "config/database.yml", after: "test:" do 
+    "\n  <<: *default\n  database: <%= ENV['TEST_DB_NAME'] %>\n  password: <%= ENV['TEST_DB_PASSWORD'] %>\n  username: <%= ENV['TEST_DB_USERNAME'] %>\n"
   end
 
   # Development config
   ########################################
-  insert_into_file "config/environments/development.rb", :after => "config.file_watcher = ActiveSupport::EventedFileUpdateChecker\n" do 
+  insert_into_file "config/environments/development.rb", after: "config.file_watcher = ActiveSupport::EventedFileUpdateChecker\n" do 
     config = []
+    config << ""  
+    config << "  BetterErrors::Middleware.allow_ip! '0.0.0.0/0'"  
     config << ""  
     config << "  # Make .env file work in development"
     config << "  Bundler.require(*Rails.groups)"
