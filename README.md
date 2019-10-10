@@ -21,7 +21,8 @@ rails new \
 
 ### .env
 Définir les accès à la base de données dans le ficher ```.env``` 
-```DEV_DB_NAME='MA_BASE_DE_DONNEE_dev'
+```
+DEV_DB_NAME='MA_BASE_DE_DONNEE_dev'
 DEV_DB_USERNAME='root'
 DEV_DB_PASSWORD='root'
 
@@ -32,7 +33,8 @@ TEST_DB_PASSWORD='root'
 
 ### Migrer la base de donnée
 une fois la base de données configurée lancer la commande pour créer et initialiser la base de données
-```rails db:create
+```
+rails db:create
 rails db:migrate
 ```
 
@@ -41,6 +43,7 @@ Tout le long du développement utiliser ```git flow``` pour créer les branches 
 Voir la [Documentation](https://wavemind.atlassian.net/wiki/spaces/DEV/pages/1577455/Git)
 
 A chaque fin de feature créer une pull Request et mettre @Alain Fresco comme verificateur
+
 :warning: Pas de merge sur ```develop``` sans validation de la pull Request
 
 
