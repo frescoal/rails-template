@@ -10,7 +10,8 @@ ruby '#{RUBY_VERSION}'
 #{"gem 'bootsnap', require: false" if Rails.version >= "5.2"}
 gem 'devise'
 gem 'jbuilder', '~> 2.0'
-gem 'pg', '~> 0.21'
+gem 'pg'
+gem 'tzinfo-data'
 gem 'puma'
 gem 'rails', '#{Rails.version}'
 gem 'redis'
@@ -107,6 +108,10 @@ HTML
 
 run 'curl -L https://wavemind.ch/wp-content/uploads/2019/04/wav-logo.png > app/assets/images/logo.png'
 
+insert_into_file "config/application.rb", after: "config.load_defaults 5.2" do 
+  "\n    config.exceptions_app = self.routes\n    config.time_zone = 'Bern'\n    I18n.config.available_locales = :fr"
+end
+
 # Generators
 ########################################
 generators = <<-RUBY
@@ -131,6 +136,9 @@ after_bundle do
   # Routes
   ########################################
   route "root to: 'dashboard#index'"
+  route "get '/404', to: 'errors#not_found'"
+  route "get '/422', to: 'errors#unacceptable'"
+  route "get '/500', to: 'errors#internal_error'"
 
   # Git ignore
   ########################################
@@ -158,6 +166,26 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 end
   RUBY
+
+  # Error Managment
+  ########################################
+  file 'app/controllers/errors_controller.rb', <<-RUBY
+class ErrorsController < ApplicationController
+  skip_before_action :authenticate_user!
+
+  def not_found
+    render status: 404
+  end
+
+  def internal_error
+    render status: 500
+  end
+end
+  RUBY
+
+  run 'mkdir app/views/errors'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
 
   # Devise views
   ########################################
@@ -191,7 +219,6 @@ import "bootstrap";
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
     <<-JS
 const webpack = require('webpack')
-
 // Preventing Babel from transpiling NodeModules packages
 environment.loaders.delete('nodeModules');
 
@@ -210,6 +237,46 @@ environment.plugins.prepend('Provide',
   # Dotenv
   ########################################
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.env > .env'
+  
+  # Database Configuration
+  ########################################
+  insert_into_file "config/database.yml", after: "development:\n  <<: *default\n" do 
+    "  username: <%= ENV['DEV_DB_USERNAME'] %>\n  password: <%= ENV['DEV_DB_PASSWORD'] %>\n"
+  end
+  gsub_file('config/database.yml', /database: .*/, 'database: <%= ENV[\'DEV_DB_NAME\'] %>')
+  gsub_file('config/database.yml', /test:\n  <<: \*default\n  database: <%= ENV\['DEV_DB_NAME'\] %>/, 'test:')
+
+  insert_into_file "config/database.yml", after: "test:" do 
+    "\n  <<: *default\n  database: <%= ENV['TEST_DB_NAME'] %>\n  password: <%= ENV['TEST_DB_PASSWORD'] %>\n  username: <%= ENV['TEST_DB_USERNAME'] %>\n"
+  end
+
+  # Development config
+  ########################################
+  insert_into_file "config/environments/development.rb", after: "config.file_watcher = ActiveSupport::EventedFileUpdateChecker\n" do 
+    config = []
+    config << ""  
+    config << "  BetterErrors::Middleware.allow_ip! '0.0.0.0/0'"  
+    config << ""  
+    config << "  # Make .env file work in development"
+    config << "  Bundler.require(*Rails.groups)"
+    config << "  Dotenv::Railtie.load"
+    config << ""
+    config << "  # Config Bullet"
+    config << "  config.after_initialize do"
+    config << "    Bullet.enable = true"
+    config << "    Bullet.rails_logger = true"
+    config << "    # Whitelist"
+    config << "  end"  
+    config << ""  
+    config << "  # Mailcatcher"
+    config << "  config.action_mailer.perform_deliveries = true"
+    config << "  config.action_mailer.delivery_method = :smtp"
+    config << "  config.action_mailer.smtp_settings = {address: 'localhost', port: 1025}"
+    config << "  config.action_mailer.default_url_options = {host: 'localhost:3000'}"
+    config << "  config.action_mailer.raise_delivery_errors = true\n"
+    config.join("\n")
+  end
+
 
   # Rubocop
   ########################################
