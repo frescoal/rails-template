@@ -209,6 +209,7 @@ environment.plugins.prepend('Provide',
 
   # Dotenv
   ########################################
+
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.env > .env'
 
   # Rubocop
