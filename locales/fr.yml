@@ -1,0 +1,37 @@
+fr:
+  activerecord:
+    attributes:
+      user:
+        email: Email
+        password: Mot de passe
+        password_confirmation: Confirmation du mot de passe
+        current_password: Mot de passe actuel
+    errors:
+      models:
+        user:
+          attributes:
+            current_password:
+              blank: est manquant
+            password_confirmation:
+              confirmation: est incorrect
+            email:
+              blank: est manquant
+              taken: est déjà utilisé
+            password:
+              blank: est manquant
+  developed_by: "Développé par"
+  my_profile: "Mon profil"
+  logout: "Déconnexion"
+  devise:
+    registrations:
+      edit:
+        leave_it_blank: "laissez-le vide si vous ne voulez pas le changer"
+        apply_change: "nous avons besoin de votre mot de passe actuel pour confirmer vos modifications"
+        waiting_confirmation: "En attente de confirmation pour"
+        cancel_account: "Annuler mon compte"
+  save: "Enregistrer"
+  confirm:
+    destroy:
+      title: "Etes-vous sûr ?"
+      confirm: "Oui"
+      cancel: "Non"

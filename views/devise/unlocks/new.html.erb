@@ -1,0 +1,12 @@
+<div class="text-center text-muted mb-4">
+  <h1><%= t('.resend_instruction') %></h1>
+</div>
+
+<%= simple_form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
+  <%= f.input :email, autofocus: true %>
+
+  <div class="text-center">
+    <%= f.submit t('save'), class: 'btn btn-primary my-4' %>
+  </div>
+<% end %>
+</div>

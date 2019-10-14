@@ -1,0 +1,12 @@
+<div class="text-center text-muted mb-4">
+  <h1><%= t('.reset_password') %></h1>
+</div>
+
+<%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+  <%= f.input :email, autofocus: true %>
+
+  <div class="text-center">
+    <%= f.submit t('save'), class: 'btn btn-primary my-4' %>
+  </div>
+<% end %>
+</div>

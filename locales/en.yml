@@ -1,0 +1,37 @@
+en:
+  activerecord:
+    attributes:
+      user:
+        email: Email
+        password: Password
+        password_confirmation: Password confirmation
+        current_password: Current password
+    errors:
+      models:
+        user:
+          attributes:
+            current_password:
+              blank: is missing
+            password_confirmation:
+              confirmation: is invalid
+            email:
+              blank: is missing
+              taken: is already used
+            password:
+              blank: is missing
+  developed_by: "Developed by"
+  my_profile: "My profile"
+  logout: "Logout"
+  devise:
+    registrations:
+      edit:
+        leave_it_blank: "leave it blank if you don't want to change it"
+        apply_change: "we need your current password to confirm your changes"
+        waiting_confirmation: "Currently waiting confirmation for"
+        cancel_account: "Cancel my account"
+  save: "Save"
+  confirm:
+    destroy:
+      title: "Are you sure ?"
+      confirm: "Yes"
+      cancel: "No"

@@ -1,0 +1,16 @@
+<div class="text-center text-muted mb-4">
+  <h1><%= t('.login') %></h1>
+</div>
+<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <%= f.input :email, autofocus: true %>
+  <%= f.input :password %>
+  <% unless devise_mapping.rememberable? -%>
+    <div class="custom-control custom-control-alternative custom-checkbox">
+      <%= f.input :remember_me, as: :boolean %>
+    </div>
+  <% end %>
+  <div class="text-center">
+    <%= f.submit t('.connect'), class: 'btn btn-icon btn-primary my-4' %>
+  </div>
+<% end %>
+</div>

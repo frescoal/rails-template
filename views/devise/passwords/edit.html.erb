@@ -1,0 +1,17 @@
+<div class="text-center text-muted mb-4">
+  <h1><%= t('.change_your_password') %></h1>
+</div>
+
+<%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+  <%= f.input :reset_password_token, as: :hidden %>
+  <%= f.full_error :reset_password_token %>
+
+  <%= f.input :password, autofocus: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length) %>
+  <%= f.input :password_confirmation %>
+
+  <div class="text-center">
+    <%= f.button :submit, t('save'), class: 'btn btn-icon btn-primary my-4' %>
+  </div>
+
+<% end %>
+</div>

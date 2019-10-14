@@ -56,60 +56,18 @@ YAML
 run 'rm -rf app/assets/stylesheets'
 run 'rm -rf app/assets/javascripts'
 run 'rm -rf vendor'
-run 'curl -L https://github.com/frescoal/rails-template/archive/master.zip > assets.zip'
-run 'unzip assets.zip/assets -d app/assets && rm assets.zip'
+run 'curl -L https://github.com/frescoal/rails-template/archive/master.zip > wavemind.zip'
+run 'unzip wavemind.zip -d wavemind && rm wavemind.zip && mv -v rails-template-master/assets/* app/assets/ && mv -v rails-template-master/views/* app/views/ && mv -v rails-template-master/locales/* config/locales/ && rm -rf rails-template-master/'
 
 # Dev environment
 ########################################
 gsub_file('config/environments/development.rb', /config\.assets\.debug.*/, 'config.assets.debug = false')
 
-# Layout
-########################################
-run 'rm app/views/layouts/application.html.erb'
-file 'app/views/layouts/application.html.erb', <<-HTML
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>TODO</title>
-    <%= csrf_meta_tags %>
-    <%= action_cable_meta_tag %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%#= stylesheet_pack_tag 'application', media: 'all' %> <!-- Uncomment if you import CSS in app/javascript/packs/application.js -->
-  </head>
-  <body>
-    <%= render 'shared/flashes' %>
-    <%= yield %>
-    <%= javascript_include_tag 'application' %>
-    <%= javascript_pack_tag 'application' %>
-  </body>
-</html>
-HTML
-
-file 'app/views/shared/_flashes.html.erb', <<-HTML
-<% if notice %>
-  <div class="alert alert-info alert-dismissible fade show m-1" role="alert">
-    <%= notice %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-<% end %>
-<% if alert %>
-  <div class="alert alert-warning alert-dismissible fade show m-1" role="alert">
-    <%= alert %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-<% end %>
-HTML
-
 run 'curl -L https://wavemind.ch/wp-content/uploads/2019/04/wav-logo.png > app/assets/images/logo.png'
 
+# Application.rb
 insert_into_file "config/application.rb", after: "config.load_defaults 5.2" do
-  "\n    config.exceptions_app = self.routes\n    config.time_zone = 'Bern'\n    I18n.config.available_locales = :fr"
+  "\n    config.exceptions_app = self.routes\n    config.time_zone = 'Bern'\n    I18n.config.available_locales = :fr\n config.assets.paths << Rails.root.join('app', 'assets', 'fonts') "
 end
 
 # Generators
@@ -128,17 +86,29 @@ environment generators
 # AFTER BUNDLE
 ########################################
 after_bundle do
-  # Generators: db + simple form + pages controller
+
+  # Generators: simple form
   ########################################
   generate('simple_form:install', '--bootstrap')
-  generate(:controller, 'dashboard', 'index', '--skip-routes', '--no-test-framework')
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/simple_form_bootstrap.rb > config/views/initializers/simple_form_bootstrap.rb'
 
   # Routes
   ########################################
-  route "root to: 'dashboard#index'"
-  route "get '/404', to: 'errors#not_found'"
-  route "get '/422', to: 'errors#unacceptable'"
-  route "get '/500', to: 'errors#internal_error'"
+  run 'rm config/routes.rb'
+  file 'config/routes.rb', <<-RUBY
+Rails.application.routes.draw do
+  devise_for :users
+
+  authenticated :user do
+    root 'dashboard#index'
+  end
+  unauthenticated :user do
+    devise_scope :user do
+      get '/' => 'devise/sessions#new'
+    end
+  end
+end
+  RUBY
 
   # Git ignore
   ########################################
@@ -146,6 +116,8 @@ after_bundle do
 
 # Ignore .env file containing credentials.
 .env*
+.idea/*
+.vscode/*
 
 # Ignore Mac and Linux file system files
 *.swp
@@ -164,10 +136,22 @@ after_bundle do
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :authenticate_user!
+
+  layout :layout_by_resource
+
+  # Define layout if user is connected
+  def layout_by_resource
+    if user_signed_in?
+      'application'
+    else
+      'login'
+    end
+  end
 end
+
   RUBY
 
-  # Error Managment
+  # Error Management
   ########################################
   file 'app/controllers/errors_controller.rb', <<-RUBY
 class ErrorsController < ApplicationController
@@ -183,25 +167,20 @@ class ErrorsController < ApplicationController
 end
   RUBY
 
-  run 'mkdir app/views/errors'
-  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
-  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
-
-  # Devise views
+  # Error Management
   ########################################
-  generate('devise:views')
-
-  # Pages Controller
-  ########################################
-  run 'rm app/controllers/dashboard_controller.rb'
   file 'app/controllers/dashboard_controller.rb', <<-RUBY
 class DashboardController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:index]
-
   def index
   end
 end
-  RUBY
+RUBY
+
+  run 'mkdir app/views/errors'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/sweet-alert-confirm.js > app/javascript/application/sweet-alert-confirm.js'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/custom_devise_mailer.rb > app/mailers/custom_devise_mailer.rb.js'
 
   # Environments
   ########################################
@@ -211,9 +190,10 @@ end
   # Webpacker / Yarn
   ########################################
   run 'rm app/javascript/packs/application.js'
-  run 'yarn add popper.js jquery bootstrap'
+  run 'yarn add popper.js jquery bootstrap sweetalert2 rails-ujs'
   file 'app/javascript/packs/application.js', <<-JS
 import "bootstrap";
+import 'application/sweet-alert-confirm';
   JS
 
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do

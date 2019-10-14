@@ -1,0 +1,33 @@
+<div class="col-6">
+  <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+    <small><%= link_to t('.forgot_password'), new_password_path(resource_name), class: 'text-light' %></small><br/>
+  <% end -%>
+  <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+    <small><%= link_to t('.sign_up'), new_registration_path(resource_name), class: 'text-light' %></small><br/>
+  <% end -%>
+  <%- if devise_mapping.omniauthable? %>
+    <%- resource_class.omniauth_providers.each do |provider| %>
+      <small><%= link_to OmniAuth::Utils.camelize(provider), omniauth_authorize_path(resource_name, provider), class: 'text-light' %></small>
+      <br/>
+    <% end -%>
+  <% end -%>
+</div>
+
+<div class="col-6 text-right">
+  <%- if controller_name != 'sessions' %>
+    <small><%= link_to t('.sign_in'), new_session_path(resource_name), class: 'text-light' %></small><br/>
+  <% end -%>
+  <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+    <small><%= link_to t('.confirmation_instruction'), new_confirmation_path(resource_name), class: 'text-light' %></small><br/>
+  <% end -%>
+  <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+    <small><%= link_to t('.unlock_instruction'), new_unlock_path(resource_name), class: 'text-light' %></small><br/>
+  <% end -%>
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<%= render 'shared/header' %>
+<body class="g-sidenav-pinned">
+<%= render 'shared/left-menu' %>
+<div class="main-content" id="panel">
+  <%= render 'shared/top-bar' %>
+  <%= render 'shared/flashes' %>
+  <%= yield %>
+  <!-- Footer -->
+  <%= render 'shared/footer' %>
+</div>
+<%= javascript_include_tag 'application' %>
+<%= javascript_pack_tag 'application' %>
+</body>
+</html>
