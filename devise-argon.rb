@@ -57,7 +57,13 @@ run 'rm -rf app/assets/stylesheets'
 run 'rm -rf app/assets/javascripts'
 run 'rm -rf vendor'
 run 'curl -L https://github.com/frescoal/rails-template/archive/master.zip > wavemind.zip'
-run 'unzip wavemind.zip -d wavemind && rm wavemind.zip && mv -v rails-template-master/assets/* app/assets/ && mv -v rails-template-master/views/* app/views/ && mv -v rails-template-master/locales/* config/locales/ && rm -rf rails-template-master/'
+run 'unzip wavemind.zip -d wavemind && rm wavemind.zip'
+run 'mv -v -f wavemind/rails-template-master/assets/* app/assets/'
+run 'mv -v -f wavemind/rails-template-master/views/* app/views/'
+run 'mv -v -f wavemind/rails-template-master/locales/* config/locales/'
+run 'mv -v -f wavemind/rails-template-master/inputs/* app/inputs/'
+run 'rm -rf wavemind/'
+
 
 # Dev environment
 ########################################
@@ -180,7 +186,8 @@ RUBY
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/sweet-alert-confirm.js > app/javascript/application/sweet-alert-confirm.js'
-  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/custom_devise_mailer.rb > app/mailers/custom_devise_mailer.rb.js'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/custom_devise_mailer.rb > app/mailers/custom_devise_mailer.rb'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/application_helper.rb > app/helpers/application_helper.rb'
 
   # Environments
   ########################################
