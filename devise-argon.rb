@@ -59,7 +59,7 @@ run 'curl -L https://wavemind.ch/wp-content/uploads/2019/04/wav-logo.png > app/a
 
 # Application.rb
 insert_into_file "config/application.rb", after: "config.load_defaults 5.2" do
-  "\n    config.exceptions_app = self.routes\n    config.time_zone = 'Bern'\n    I18n.config.available_locales = :fr\n config.assets.paths << Rails.root.join('app', 'assets', 'fonts') "
+  "\n    config.exceptions_app = self.routes\n    config.time_zone = 'Bern'\n    I18n.config.available_locales = :fr\n    config.assets.paths << Rails.root.join('app', 'assets', 'fonts')\n    config.i18n.default_locale = :fr"
 end
 
 # Generators
@@ -83,6 +83,13 @@ after_bundle do
   ########################################
   generate(:controller, 'dashboard', 'index', '--skip-routes', '--no-test-framework')
   generate('simple_form:install', '--bootstrap')
+
+  # Devise install + user
+  ########################################
+  generate('devise:install')
+  generate('devise', 'User')
+
+  gsub_file('config/initializers/devise.rb', /# config\.mailer = 'Devise::Mailer'/, "config.mailer = 'CustomDeviseMailer'")
 
   # Assets
   ########################################
@@ -131,14 +138,6 @@ end
 *.swp
 .DS_Store
   TXT
-
-  # Devise install + user
-  ########################################
-  generate('devise:install')
-  generate('devise', 'User')
-
-  gsub_file('config/initializers/devise.rb', /# config\.mailer = 'Devise::Mailer'/, "config.mailer = 'CustomDeviseMailer'")
-
 
   # App controller
   ########################################
