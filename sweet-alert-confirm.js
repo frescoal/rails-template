@@ -1,5 +1,6 @@
-import Rails from 'rails-ujs'
+import Rails from 'rails-ujs';
 import Swal from "sweetalert2";
+
 const confirmed = (element, result) => {
   if (result.value) {
     // User clicked confirm button
@@ -42,3 +43,5 @@ function handleConfirm(element) {
 }
 
 Rails.delegate(document, 'a[data-confirm-swal]', 'click', handleConfirm);
+
+Rails.start();

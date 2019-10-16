@@ -1,6 +1,5 @@
 //= require js.cookie
 //= require jquery
-//= require rails-ujs
 //= require_tree .
 
 
