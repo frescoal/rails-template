@@ -12,11 +12,12 @@ Voici la procédure pour créer une nouvelle application
 Pour avoir la configuration de base de rails 5.2+ avec Bootstrap, Simple form, devise et les gem de debug
 
 ```bash
-rails new \
-  --database postgresql \
-  --webpack \
-  -m https://raw.githubusercontent.com/frescoal/rails-template/master/devise.rb \
-  NOM_DE_L_APP
+rails new --database postgresql --webpack -m https://raw.githubusercontent.com/frescoal/rails-template/master/devise.rb NOM_DE_L_APP
+```
+
+Pour la version graphique avec rails 5.2+, Simple form, devise
+```bash
+rails new --database postgresql --webpack -m https://raw.githubusercontent.com/frescoal/rails-template/master/devise-argon.rb NOM_DE_L_APP
 ```
 
 ### .env
