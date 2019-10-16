@@ -108,7 +108,7 @@ HTML
 
 run 'curl -L https://wavemind.ch/wp-content/uploads/2019/04/wav-logo.png > app/assets/images/logo.png'
 
-insert_into_file "config/application.rb", after: "config.load_defaults 5.2" do 
+insert_into_file "config/application.rb", after: "config.load_defaults 5.2" do
   "\n    config.exceptions_app = self.routes\n    config.time_zone = 'Bern'\n    I18n.config.available_locales = :fr"
 end
 
@@ -167,7 +167,7 @@ class ApplicationController < ActionController::Base
 end
   RUBY
 
-  # Error Managment
+  # Error Management
   ########################################
   file 'app/controllers/errors_controller.rb', <<-RUBY
 class ErrorsController < ApplicationController
@@ -237,26 +237,26 @@ environment.plugins.prepend('Provide',
   # Dotenv
   ########################################
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/.env > .env'
-  
+
   # Database Configuration
   ########################################
-  insert_into_file "config/database.yml", after: "development:\n  <<: *default\n" do 
+  insert_into_file "config/database.yml", after: "development:\n  <<: *default\n" do
     "  username: <%= ENV['DEV_DB_USERNAME'] %>\n  password: <%= ENV['DEV_DB_PASSWORD'] %>\n"
   end
   gsub_file('config/database.yml', /database: .*/, 'database: <%= ENV[\'DEV_DB_NAME\'] %>')
   gsub_file('config/database.yml', /test:\n  <<: \*default\n  database: <%= ENV\['DEV_DB_NAME'\] %>/, 'test:')
 
-  insert_into_file "config/database.yml", after: "test:" do 
+  insert_into_file "config/database.yml", after: "test:" do
     "\n  <<: *default\n  database: <%= ENV['TEST_DB_NAME'] %>\n  password: <%= ENV['TEST_DB_PASSWORD'] %>\n  username: <%= ENV['TEST_DB_USERNAME'] %>\n"
   end
 
   # Development config
   ########################################
-  insert_into_file "config/environments/development.rb", after: "config.file_watcher = ActiveSupport::EventedFileUpdateChecker\n" do 
+  insert_into_file "config/environments/development.rb", after: "config.file_watcher = ActiveSupport::EventedFileUpdateChecker\n" do
     config = []
-    config << ""  
-    config << "  BetterErrors::Middleware.allow_ip! '0.0.0.0/0'"  
-    config << ""  
+    config << ""
+    config << "  BetterErrors::Middleware.allow_ip! '0.0.0.0/0'"
+    config << ""
     config << "  # Make .env file work in development"
     config << "  Bundler.require(*Rails.groups)"
     config << "  Dotenv::Railtie.load"
@@ -266,8 +266,8 @@ environment.plugins.prepend('Provide',
     config << "    Bullet.enable = true"
     config << "    Bullet.rails_logger = true"
     config << "    # Whitelist"
-    config << "  end"  
-    config << ""  
+    config << "  end"
+    config << ""
     config << "  # Mailcatcher"
     config << "  config.action_mailer.perform_deliveries = true"
     config << "  config.action_mailer.delivery_method = :smtp"

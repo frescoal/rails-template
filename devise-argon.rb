@@ -51,20 +51,6 @@ file 'Procfile', <<-YAML
 web: bundle exec puma -C config/puma.rb
 YAML
 
-# Assets
-########################################
-run 'rm -rf app/assets/stylesheets'
-run 'rm -rf app/assets/javascripts'
-run 'rm -rf vendor'
-run 'curl -L https://github.com/frescoal/rails-template/archive/master.zip > wavemind.zip'
-run 'unzip wavemind.zip -d wavemind && rm wavemind.zip'
-run 'mv -v -f wavemind/rails-template-master/assets/* app/assets/'
-run 'mv -v -f wavemind/rails-template-master/views/* app/views/'
-run 'mv -v -f wavemind/rails-template-master/locales/* config/locales/'
-run 'mv -v -f wavemind/rails-template-master/inputs/* app/inputs/'
-run 'rm -rf wavemind/'
-
-
 # Dev environment
 ########################################
 gsub_file('config/environments/development.rb', /config\.assets\.debug.*/, 'config.assets.debug = false')
@@ -95,8 +81,24 @@ after_bundle do
 
   # Generators: simple form
   ########################################
+  generate(:controller, 'dashboard', 'index', '--skip-routes', '--no-test-framework')
   generate('simple_form:install', '--bootstrap')
-  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/simple_form_bootstrap.rb > config/views/initializers/simple_form_bootstrap.rb'
+
+  # Assets
+  ########################################
+  run 'rm -rf app/assets/stylesheets'
+  run 'rm -rf app/assets/javascripts'
+  run 'rm -rf app/views/*'
+  run 'rm -rf vendor'
+  run 'mkdir app/inputs'
+  run 'curl -L https://github.com/frescoal/rails-template/archive/master.zip > wavemind.zip'
+  run 'unzip wavemind.zip -d wavemind && rm wavemind.zip'
+  run 'mv -v -f wavemind/rails-template-master/assets/* app/assets/'
+  run 'mv -v -f wavemind/rails-template-master/views/* app/views/'
+  run 'mv -v -f wavemind/rails-template-master/locales/* config/locales/'
+  run 'mv -v -f wavemind/rails-template-master/inputs/* app/inputs/'
+  run 'rm -rf wavemind/'
+  run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/simple_form_bootstrap.rb > config/initializers/simple_form_bootstrap.rb'
 
   # Routes
   ########################################
@@ -134,6 +136,9 @@ end
   ########################################
   generate('devise:install')
   generate('devise', 'User')
+
+  gsub_file('config/initializers/devise.rb', /# config\.mailer = 'Devise::Mailer'/, "config.mailer = 'CustomDeviseMailer'")
+
 
   # App controller
   ########################################
@@ -173,16 +178,8 @@ class ErrorsController < ApplicationController
 end
   RUBY
 
-  # Error Management
-  ########################################
-  file 'app/controllers/dashboard_controller.rb', <<-RUBY
-class DashboardController < ApplicationController
-  def index
-  end
-end
-RUBY
-
   run 'mkdir app/views/errors'
+  run 'mkdir app/javascript/application'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/404.html.erb > app/views/errors/not_found.html.erb'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/500.html.erb > app/views/errors/internal_server_error.html.erb'
   run 'curl -L https://raw.githubusercontent.com/frescoal/rails-template/master/sweet-alert-confirm.js > app/javascript/application/sweet-alert-confirm.js'
@@ -278,5 +275,5 @@ environment.plugins.prepend('Provide',
   ########################################
   git :init
   git add: '.'
-  git commit: "-m 'Initial commit with devise only'"
+  git commit: "-m 'Initial commit with devise with argon template'"
 end
