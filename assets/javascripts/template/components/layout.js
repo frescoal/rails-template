@@ -5,7 +5,6 @@
 'use strict';
 
 var Layout = (function() {
-
     function pinSidenav() {
         $('.sidenav-toggler').addClass('active');
         $('.sidenav-toggler').data('action', 'sidenav-unpin');

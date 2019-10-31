@@ -160,9 +160,9 @@ SimpleForm.setup do |config|
   config.wrappers :horizontal_boolean, tag: 'div', class: 'form-group row', error_class: 'form-group-invalid', valid_class: 'form-group-valid' do |b|
     b.use :html5
     b.optional :readonly
-    b.wrapper tag: 'label', class: 'col-sm-3' do |ba|
-      ba.use :label_text
-    end
+    # b.wrapper tag: 'label', class: 'col-sm-3' do |ba|
+    #   ba.use :label_text
+    # end
     b.wrapper :grid_wrapper, tag: 'div', class: 'col-sm-9' do |wr|
       wr.wrapper :form_check_wrapper, tag: 'div', class: 'form-check' do |bb|
         bb.use :input, class: 'form-check-input', error_class: 'is-invalid', valid_class: 'is-valid'
@@ -418,8 +418,8 @@ SimpleForm.setup do |config|
   config.wrapper_mappings = {
     boolean:       :vertical_boolean,
     check_boxes:   :vertical_collection,
-    date:          :vertical_multi_select,
-    datetime:      :vertical_multi_select,
+    # date:          :vertical_multi_select,
+    # datetime:      :vertical_multi_select,
     # file:          :vertical_file,
     radio_buttons: :vertical_collection,
     range:         :vertical_range,
@@ -430,8 +430,8 @@ SimpleForm.setup do |config|
   config.wrapper_mappings = {
     boolean: :horizontal_boolean,
     check_boxes: :horizontal_collection_inline,
-    date: :custom_multi_select,
-    datetime: :custom_multi_select,
+    # date: :custom_multi_select,
+    # datetime: :custom_multi_select,
     file: :custom_file,
     # radio_buttons: :custom_collection,
     # range:         :custom_range,

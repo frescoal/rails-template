@@ -4,12 +4,11 @@
 
 'use strict';
 
-var FormControl = (function() {
+let FormControl = (function() {
 
 	// Variables
 
-	var $input = $('.form-control');
-
+	let $input = $('.form-control');
 
 	// Methods
 
@@ -21,9 +20,35 @@ var FormControl = (function() {
 
 
 	// Events
-
 	if ($input.length) {
 		init($input);
 	}
 
 })();
+
+
+let InputFile = (function() {
+
+  // Variables
+  let $input = $('.custom-file-input');
+
+  // Methods
+  function init($this) {
+    $this.on('change',function(){
+      // Get the file name
+      let fileName = $this.val();
+
+      // Replace the "Choose a file" label
+      $this.next('.custom-file-label').html(fileName);
+    });
+  }
+
+
+  // Events
+  if ($input.length) {
+    init($input);
+  }
+
+})();
+
+
